@@ -1,0 +1,18 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:11-alpine3.16
+    command:
+      - "postgres"
+      - "-c"
+      - "log_line_prefix=%m [%p]  %q%u@%d %h - "
+    restart: always
+    environment:
+      POSTGRES_DB: "pgdb"
+      POSTGRES_USER: "pgsql"
+      POSTGRES_PASSWORD: ""
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - .:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
