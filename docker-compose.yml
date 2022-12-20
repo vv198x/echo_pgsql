@@ -2,6 +2,8 @@ version: "3.9"
 services:
   postgres:
     image: postgres:11-alpine3.16
+    networks:
+      - backend
     command:
       - "postgres"
       - "-c"
@@ -10,9 +12,26 @@ services:
     environment:
       POSTGRES_DB: "pgdb"
       POSTGRES_USER: "pgsql"
-      POSTGRES_PASSWORD: ""
+      POSTGRES_PASSWORD: "PASS"
       PGDATA: "/var/lib/postgresql/data/pgdata"
     volumes:
       - .:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+  user:
+    build: .
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      - "postgres"
+    ports:
+      - "8000:8000"
+    expose:
+      - "8000"
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge

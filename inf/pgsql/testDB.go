@@ -2,7 +2,7 @@ package pgsql
 
 import (
 	"errors"
-	"usersSL/models"
+	"userSL/models"
 )
 
 type testBD struct {

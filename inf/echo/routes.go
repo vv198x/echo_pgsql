@@ -5,9 +5,9 @@ import (
 	"github.com/labstack/echo/middleware"
 	"log"
 	"net/http"
-	"usersSL/app/users"
-	"usersSL/inf/pgsql"
-	"usersSL/models"
+	"userSL/app/users"
+	"userSL/inf/pgsql"
+	"userSL/models"
 )
 
 func routes(e *echo.Echo) {
@@ -21,7 +21,8 @@ func routes(e *echo.Echo) {
 }
 
 func forAdmin(login, pass string, c echo.Context) (bool, error) {
-	u, err := getUserDB(c, login)
+	db, _ := c.Get("db").(pgsql.Storage)
+	u, err := db.Load(login)
 	if err == nil && u.Password == pass {
 
 		if u.Rule == models.Admin {
@@ -35,7 +36,8 @@ func forAdmin(login, pass string, c echo.Context) (bool, error) {
 }
 
 func forAll(login, pass string, c echo.Context) (bool, error) {
-	u, err := getUserDB(c, login)
+	db, _ := c.Get("db").(pgsql.Storage)
+	u, err := db.Load(login)
 	if err == nil && u.Password == pass {
 
 		if u.Rule == models.Lock {
@@ -47,10 +49,4 @@ func forAll(login, pass string, c echo.Context) (bool, error) {
 		}
 	}
 	return false, err
-}
-
-func getUserDB(c echo.Context, login string) (models.User, error) {
-	db, _ := c.Get("db").(pgsql.Storage)
-	u, err := db.Load(login)
-	return u, err
 }

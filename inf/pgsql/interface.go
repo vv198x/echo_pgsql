@@ -1,6 +1,6 @@
 package pgsql
 
-import "usersSL/models"
+import "userSL/models"
 
 type Storage interface {
 	Load(login string) (models.User, error)

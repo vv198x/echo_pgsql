@@ -4,7 +4,7 @@ import (
 	"github.com/go-playground/validator"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-	"usersSL/inf/pgsql"
+	"userSL/inf/pgsql"
 )
 
 func Start(addr string) {

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"usersSL/inf/echo"
-	"usersSL/pkg/logger"
+	"userSL/inf/echo"
+	"userSL/pkg/logger"
 )
 
 func main() {

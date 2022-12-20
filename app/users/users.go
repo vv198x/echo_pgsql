@@ -4,8 +4,8 @@ import (
 	"github.com/labstack/echo"
 	"log"
 	"net/http"
-	"usersSL/inf/pgsql"
-	"usersSL/models"
+	"userSL/inf/pgsql"
+	"userSL/models"
 )
 
 func Read(c echo.Context) error {

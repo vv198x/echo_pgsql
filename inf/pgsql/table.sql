@@ -19,5 +19,5 @@ VALUES ('user', 'user', 1, 'first name user', 'last name user', 1000000)
 RETURNING *;
 
 INSERT INTO users
-VALUES ('lock', 'lock', 1, 'first name lock', 'last name lock', 2000000)
+VALUES ('lock', 'lock', 2, 'first name lock', 'last name lock', 2000000)
 RETURNING *;

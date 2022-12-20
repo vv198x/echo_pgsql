@@ -3,7 +3,7 @@ package pgsql
 import (
 	"github.com/go-pg/pg"
 	"github.com/labstack/gommon/log"
-	"usersSL/models"
+	"userSL/models"
 )
 
 type pgSQL struct {
@@ -13,9 +13,9 @@ type pgSQL struct {
 func GetPostgre() *pgSQL {
 	options := &pg.Options{
 		User:     "pgsql",
-		Password: "BAGFIxtgR2ynIL3tip4a",
-		Addr:     "192.168.122.111:5432",
-		Database: "postgres",
+		Password: "PASS",
+		Addr:     "postgres:5432",
+		Database: "pgdb",
 		PoolSize: 50,
 	}
 

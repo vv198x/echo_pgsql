@@ -1,4 +1,4 @@
-module usersSL
+module userSL
 
 go 1.19
 
