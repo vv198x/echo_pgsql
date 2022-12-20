@@ -1,8 +1,10 @@
 package pgsql
 
 import (
+	"fmt"
 	"github.com/go-pg/pg"
 	"github.com/labstack/gommon/log"
+	"io/ioutil"
 	"userSL/models"
 )
 
@@ -72,4 +74,18 @@ func (d dbLogger) BeforeQuery(q *pg.QueryEvent) {
 func (d dbLogger) AfterQuery(q *pg.QueryEvent) {
 	logPG, _ := q.FormattedQuery()
 	log.Printf("%v \n", logPG)
+}
+
+func ReplaceTable(file string) {
+	db := GetPostgre()
+	defer db.CloseDB()
+
+	c, ioErr := ioutil.ReadFile("./table.sql")
+	if ioErr == nil {
+		_, err := db.c.Exec(string(c))
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
+
 }
