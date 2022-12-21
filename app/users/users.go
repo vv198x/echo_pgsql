@@ -4,10 +4,20 @@ import (
 	"github.com/labstack/echo"
 	"log"
 	"net/http"
+	"strings"
 	"userSL/inf/pgsql"
 	"userSL/models"
 )
 
+// GetUser godoc
+// @Tags read
+// @Summary Retrieves user based on given Login
+// @Produce json
+// @Param login path string true "User login"
+// @Success 200 {object} models.User
+// @Failure	404 {object} models.JSONResult{message=string} "Not found"
+// @Failure	500
+// @Router /{login} [get]
 func Read(c echo.Context) error {
 	db, _ := c.Get("db").(pgsql.Storage)
 
@@ -18,17 +28,26 @@ func Read(c echo.Context) error {
 			log.Println("DB error ", err)
 			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 		}
-		return c.JSON(http.StatusFound, &users)
+		return c.JSON(http.StatusOK, &users)
 	}
 
 	user, err := db.Load(login)
 	if err == nil {
-		return c.JSON(http.StatusFound, &user)
+		return c.JSON(http.StatusOK, &user)
 	}
 
 	return echo.NewHTTPError(http.StatusNotFound, err.Error())
 }
 
+// GetUser godoc
+// @Summary Create new user
+// @Tags admins
+// @Produce json
+// @Param message body models.User true  "New user"
+// @Success 201 {object} models.User
+// @Failure	400 {string} string    "Validation error"
+// @Failure	500
+// @Router / [post]
 func Create(c echo.Context) error {
 	user := new(models.User)
 
@@ -43,6 +62,10 @@ func Create(c echo.Context) error {
 
 	if err == nil {
 		return c.JSON(http.StatusCreated, user)
+	}
+
+	if strings.Contains(err.Error(), "duplicate") { //TODO chek
+		return echo.NewHTTPError(http.StatusConflict, err.Error())
 	}
 
 	return echo.NewHTTPError(http.StatusInternalServerError, err.Error())

@@ -15,8 +15,8 @@ type pgSQL struct {
 func GetPostgre() *pgSQL {
 	options := &pg.Options{
 		User:     "pgsql",
-		Password: "PASS",
-		Addr:     "postgres:5432",
+		Password: "BAGFIxtgR2ynIL3tip4a",
+		Addr:     "localhost:5432",
 		Database: "pgdb",
 		PoolSize: 50,
 	}

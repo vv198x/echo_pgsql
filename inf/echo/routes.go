@@ -12,7 +12,7 @@ import (
 
 func routes(e *echo.Echo) {
 
-	e.POST("/api/users/v1", users.Create, middleware.BasicAuth(forAdmin))
+	e.POST("/api/users/v1/", users.Create, middleware.BasicAuth(forAdmin))
 	e.GET("/api/users/v1/", users.Read, middleware.BasicAuth(forAll))
 	e.GET("/api/users/v1/:login", users.Read, middleware.BasicAuth(forAll))
 	e.PUT("/api/users/v1/:login", users.Update, middleware.BasicAuth(forAdmin))
