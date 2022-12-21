@@ -11,7 +11,7 @@ import (
 // @version         0.0.1
 // @description     Api server
 
-// @host      80.92.206.187:8000
+// @host      localhost:8000
 // @BasePath  /api/users/v1
 // @schemes http
 //	@tag.name	admins
