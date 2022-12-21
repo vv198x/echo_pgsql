@@ -1,0 +1,175 @@
+basePath: /api/users/v1
+definitions:
+  models.JSONResult:
+    properties:
+      message:
+        type: string
+    type: object
+  models.User:
+    properties:
+      dob:
+        type: integer
+      last_name:
+        type: string
+      login:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      rule:
+        type: integer
+    required:
+    - dob
+    - last_name
+    - login
+    - name
+    - password
+    - rule
+    type: object
+host: localhost:8000
+info:
+  contact: {}
+  description: Api server
+  title: Simple API
+  version: 0.0.1
+paths:
+  /:
+    post:
+      parameters:
+      - description: New user
+        in: body
+        name: message
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Validation error
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResult'
+            - properties:
+                message:
+                  type: string
+              type: object
+        "409":
+          description: User with this login exists
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResult'
+            - properties:
+                message:
+                  type: string
+              type: object
+        "500":
+          description: Internal Server Error
+      summary: Create new user
+      tags:
+      - admins
+  /{login}:
+    delete:
+      parameters:
+      - description: User login
+        in: path
+        name: login
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+      summary: Delete user on given Login
+      tags:
+      - admins
+    get:
+      parameters:
+      - description: User login
+        in: path
+        name: login
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "404":
+          description: Not found
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResult'
+            - properties:
+                message:
+                  type: string
+              type: object
+        "500":
+          description: Internal Server Error
+      summary: Retrieves user based on given Login
+      tags:
+      - read
+    put:
+      parameters:
+      - description: User login
+        in: path
+        name: login
+        required: true
+        type: string
+      - description: Update user
+        in: body
+        name: message
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Validation error
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResult'
+            - properties:
+                message:
+                  type: string
+              type: object
+        "404":
+          description: Not found
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResult'
+            - properties:
+                message:
+                  type: string
+              type: object
+        "500":
+          description: Internal Server Error
+      summary: Update user on given Login
+      tags:
+      - admins
+schemes:
+- http
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"
+tags:
+- description: Admin access
+  name: admins
+- description: Read only access. For all but blocked
+  name: read

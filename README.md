@@ -8,6 +8,9 @@
 | PUT (U)    | /api/users/v1/user_name | Обновить                    | 
 | DELETE (D) | /api/users/v1/user_name | Удалить                     | 
 
+##### Swagger :
+#####
+
 ##### Docker (Проверил сразу запускается):
 #####
 https://github.com/vv198x/userSL/blob/main/Docker/docker-compose.yml
@@ -18,4 +21,5 @@ https://github.com/vv198x/userSL/blob/main/Docker/docker-compose.yml
 | github.com/go-pg/pg                 |
 | github.com/go-playground/validator  |
 | github.com/labstack/echo  |
+| github.com/swaggo/  |
 

@@ -16,8 +16,6 @@ const (
 	Lock
 )
 
-type JSONResult struct { //for swag
-	Code    int         `json:"code" `
-	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
+type JSONResult struct {
+	Message string `json:"message"`
 }

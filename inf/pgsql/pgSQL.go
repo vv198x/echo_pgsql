@@ -16,7 +16,7 @@ func GetPostgre() *pgSQL {
 	options := &pg.Options{
 		User:     "pgsql",
 		Password: "BAGFIxtgR2ynIL3tip4a",
-		Addr:     "localhost:5432",
+		Addr:     "postgres:5432",
 		Database: "pgdb",
 		PoolSize: 50,
 	}

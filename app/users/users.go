@@ -9,7 +9,7 @@ import (
 	"userSL/models"
 )
 
-// GetUser godoc
+// Read godoc
 // @Tags read
 // @Summary Retrieves user based on given Login
 // @Produce json
@@ -39,13 +39,14 @@ func Read(c echo.Context) error {
 	return echo.NewHTTPError(http.StatusNotFound, err.Error())
 }
 
-// GetUser godoc
+// Create godoc
 // @Summary Create new user
 // @Tags admins
 // @Produce json
 // @Param message body models.User true  "New user"
 // @Success 201 {object} models.User
-// @Failure	400 {string} string    "Validation error"
+// @Failure	400 {object} models.JSONResult{message=string} "Validation error"
+// @Failure	409 {object} models.JSONResult{message=string} "User with this login exists"
 // @Failure	500
 // @Router / [post]
 func Create(c echo.Context) error {
@@ -64,12 +65,24 @@ func Create(c echo.Context) error {
 		return c.JSON(http.StatusCreated, user)
 	}
 
-	if strings.Contains(err.Error(), "duplicate") { //TODO chek
+	if strings.Contains(err.Error(), "duplicate") {
 		return echo.NewHTTPError(http.StatusConflict, err.Error())
 	}
 
 	return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 }
+
+// Update godoc
+// @Summary Update user on given Login
+// @Tags admins
+// @Produce json
+// @Param login path string true "User login"
+// @Param message body models.User true  "Update user"
+// @Success 202 {object} models.User
+// @Failure	404 {object} models.JSONResult{message=string} "Not found"
+// @Failure	400 {object} models.JSONResult{message=string} "Validation error"
+// @Failure	500
+// @Router /{login} [put]
 func Update(c echo.Context) error {
 	user := new(models.User)
 
@@ -93,6 +106,15 @@ func Update(c echo.Context) error {
 
 	return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 }
+
+// Delete godoc
+// @Tags admins
+// @Summary Delete user on given Login
+// @Produce json
+// @Param login path string true "User login"
+// @Success 200
+// @Failure	500
+// @Router /{login} [delete]
 func Delete(c echo.Context) error {
 	db, _ := c.Get("db").(pgsql.Storage)
 
@@ -103,5 +125,5 @@ func Delete(c echo.Context) error {
 		return c.NoContent(http.StatusOK)
 	}
 
-	return echo.NewHTTPError(http.StatusNotFound, err.Error())
+	return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 }
