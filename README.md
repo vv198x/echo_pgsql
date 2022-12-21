@@ -1,3 +1,11 @@
+##### Swagger :
+#####
+https://github.com/vv198x/userSL/blob/main/docs/swagger.yaml
+
+##### Docker :
+#####
+https://github.com/vv198x/userSL/blob/main/Docker/docker-compose.yml
+
 ##### Endpoints :
 #####
 | Метод      | Параметры               | Описание                    |
@@ -8,13 +16,6 @@
 | PUT (U)    | /api/users/v1/user_name | Обновить                    | 
 | DELETE (D) | /api/users/v1/user_name | Удалить                     | 
 
-##### Swagger :
-#####
-https://github.com/vv198x/userSL/blob/main/docs/swagger.yaml
-
-##### Docker :
-#####
-https://github.com/vv198x/userSL/blob/main/Docker/docker-compose.yml
 
 
 | Пакеты использовал                  |
