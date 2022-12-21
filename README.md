@@ -10,8 +10,9 @@
 
 ##### Swagger :
 #####
+https://github.com/vv198x/userSL/blob/main/docs/swagger.yaml
 
-##### Docker (Проверил сразу запускается):
+##### Docker :
 #####
 https://github.com/vv198x/userSL/blob/main/Docker/docker-compose.yml
 
