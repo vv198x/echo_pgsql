@@ -1,5 +1,4 @@
 #!/usr/bin/zsh
-#curl -u admin:admin http://localhost:8000/api/users/v1/user
 
 curl -H "Content-Type: application/json" -X POST \
 -d '{"login":"new","password":"new4","rule":1,"name":"first name new","last_name":"last name new","dob":200000}' \

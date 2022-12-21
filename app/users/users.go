@@ -39,7 +39,6 @@ func Create(c echo.Context) error {
 	}
 
 	db, _ := c.Get("db").(pgsql.Storage)
-
 	err = db.Save(user)
 
 	if err == nil {
@@ -73,6 +72,7 @@ func Update(c echo.Context) error {
 }
 func Delete(c echo.Context) error {
 	db, _ := c.Get("db").(pgsql.Storage)
+
 	login := c.Param("login")
 	err := db.Remove(login)
 
