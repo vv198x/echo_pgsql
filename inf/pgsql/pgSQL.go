@@ -39,11 +39,11 @@ func (pg *pgSQL) Load(login string) (models.User, error) {
 	return *user, err
 }
 
-func (pg *pgSQL) LoadAll() (*[]models.User, error) {
+func (pg *pgSQL) LoadAll() ([]models.User, error) {
 	users := new([]models.User)
 	err := pg.c.Model(users).Select()
 
-	return users, err
+	return *users, err
 }
 
 func (pg *pgSQL) Save(user *models.User) error {

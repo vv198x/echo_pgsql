@@ -12,10 +12,11 @@ import (
 func headlers(e *echo.Echo) {
 
 	e.POST("/api/users/v1/", Create, middleware.BasicAuth(forAdmin))
-	e.GET("/api/users/v1/", Read, middleware.BasicAuth(forAll))
-	e.GET("/api/users/v1/:login", Read, middleware.BasicAuth(forAll))
 	e.PUT("/api/users/v1/:login", Update, middleware.BasicAuth(forAdmin))
 	e.DELETE("/api/users/v1/:login", Delete, middleware.BasicAuth(forAdmin))
+	// Для пакета swag разделил Read
+	e.GET("/api/users/v1/", ReadAll, middleware.BasicAuth(forAll))
+	e.GET("/api/users/v1/:login", Read, middleware.BasicAuth(forAll))
 
 }
 

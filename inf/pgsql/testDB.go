@@ -27,10 +27,10 @@ func (*testBD) Load(login string) (models.User, error) {
 	return models.User{}, errors.New("User not found")
 }
 
-func (*testBD) LoadAll() (*[]models.User, error) {
+func (*testBD) LoadAll() ([]models.User, error) {
 	users := []models.User{admin, user}
 
-	return &users, nil
+	return users, nil
 }
 
 func (*testBD) Save(user *models.User) error {

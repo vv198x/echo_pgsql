@@ -22,21 +22,39 @@ func Read(c echo.Context) error {
 	db, _ := c.Get("db").(pgsql.Storage)
 
 	login := c.Param("login")
-	if login == "" {
-		users, err := db.LoadAll()
-		if err != nil {
-			log.Println("DB error ", err)
-			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+
+	user, err := db.Load(login)
+	//Не выводить пароль. Так занулил, если тип сменится.
+	user.Password = models.User{}.Password
+	if err == nil && len(user.Login) != 0 {
+		return c.JSON(http.StatusOK, &user)
+	} else {
+		return echo.NewHTTPError(http.StatusNotFound, err.Error())
+	}
+
+	log.Println("DB error ", err)
+	return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+}
+
+// Read godoc
+// @Tags read
+// @Summary Retrieves users
+// @Produce json
+// @Success 200 {object} models.User
+// @Failure	500
+// @Router / [get]
+func ReadAll(c echo.Context) error {
+	db, _ := c.Get("db").(pgsql.Storage)
+	users, err := db.LoadAll()
+	if err == nil {
+		for i := range users {
+			users[i].Password = models.User{}.Password
 		}
 		return c.JSON(http.StatusOK, &users)
 	}
 
-	user, err := db.Load(login)
-	if err == nil {
-		return c.JSON(http.StatusOK, &user)
-	}
-
-	return echo.NewHTTPError(http.StatusNotFound, err.Error())
+	log.Println("DB error ", err)
+	return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 }
 
 // Create godoc
@@ -99,9 +117,7 @@ func Update(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err.Error())
 	} else {
-
 		return c.JSON(http.StatusAccepted, user)
-
 	}
 
 	return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
