@@ -17,8 +17,9 @@ func headlers(e *echo.Echo) {
 	root.POST("/", Create, middleware.BasicAuth(forAdmin))
 	login.PUT("", Update, middleware.BasicAuth(forAdmin))
 	login.DELETE("", Delete, checkLastAdmin, middleware.BasicAuth(forAdmin))
+
 	// Для пакета swag разделил Read(на Read и ReadAll). И не получилось в одну совместить
-	// На верно нужен костомный хендлер
+	// Наверно нужен костомный хендлер
 	root.GET("/", ReadAll, middleware.BasicAuth(forAll))
 	login.GET("", Read, middleware.BasicAuth(forAll))
 
@@ -27,15 +28,18 @@ func headlers(e *echo.Echo) {
 func validJSON(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		user := new(models.User)
-		if c.Request().Method != http.MethodGet {
+		m := c.Request().Method
+
+		if m == http.MethodPost || m == http.MethodPut {
 
 			c.Bind(user)
 			err := c.Validate(user)
 			if err != nil {
 				return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 			}
+
 			// Передаю валидного юзера дальше
-			c.Set("user", &user)
+			c.Set("validUser", user)
 		}
 
 		return next(c)

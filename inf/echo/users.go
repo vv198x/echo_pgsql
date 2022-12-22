@@ -58,17 +58,10 @@ func ReadAll(c echo.Context) error {
 // @Failure	500
 // @Router / [post]
 func Create(c echo.Context) error {
-	user := new(models.User)
-
-	c.Bind(user)
-	err := c.Validate(user)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-	}
-
+	user := c.Get("validUser").(*models.User)
 	db, _ := c.Get("db").(pgsql.Storage)
-	err = db.Save(user)
 
+	err := db.Save(user)
 	if err == nil {
 		return c.JSON(http.StatusCreated, user)
 	}
@@ -77,6 +70,7 @@ func Create(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusConflict, err.Error())
 	}
 
+	log.Println("DB error ", err)
 	return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 }
 
@@ -93,7 +87,7 @@ func Create(c echo.Context) error {
 // @Router /{login} [put]
 func Update(c echo.Context) error {
 	db, _ := c.Get("db").(pgsql.Storage)
-	user := c.Get("user").(*models.User)
+	user := c.Get("validUser").(*models.User)
 
 	oldLogin := c.Param("login")
 

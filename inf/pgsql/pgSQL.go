@@ -35,25 +35,26 @@ func GetPostgre() *pgSQL {
 
 func (pg *pgSQL) Load(login string) (models.User, error) {
 	user := new(models.User)
+
 	err := pg.c.Model(user).Where("login = ?0", login).Select()
 	return *user, err
 }
 
 func (pg *pgSQL) LoadAll() ([]models.User, error) {
 	users := new([]models.User)
-	err := pg.c.Model(users).Select()
 
+	err := pg.c.Model(users).Select()
 	return *users, err
 }
 
 func (pg *pgSQL) Save(user *models.User) error {
+
 	_, err := pg.c.Model(user).Returning("*").Insert()
 	return err
 }
 func (pg *pgSQL) Change(oldLogin string, user *models.User) error {
 
 	_, err := pg.c.Model(user).Where("login = ?0", oldLogin).Returning("*").Update()
-
 	return err
 }
 
