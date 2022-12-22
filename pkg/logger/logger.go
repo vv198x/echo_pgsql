@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+	"userSL/pkg/config"
 )
 
 const logDir = "./log"
@@ -28,8 +29,9 @@ func Start() {
 	if err != nil {
 		log.Fatalln("Dont create log file")
 	}
-
-	log.SetOutput(LogFile)
+	if !*config.Debug {
+		log.SetOutput(LogFile)
+	}
 }
 
 func SendSyslogMail(msg string) {

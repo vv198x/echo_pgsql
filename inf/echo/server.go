@@ -10,7 +10,7 @@ import (
 func Start(addr string) {
 	e := echo.New()
 
-	db := pgsql.GetPostgre()
+	db := pgsql.GetTestDb()
 	defer db.CloseDB()
 
 	e.Use(ContextDB(db))
@@ -21,7 +21,7 @@ func Start(addr string) {
 	e.Use(middleware.Recover())
 	e.Validator = &CustomValidator{Validator: validator.New()}
 
-	routes(e)
+	headlers(e)
 
 	e.Logger.Fatal(e.Start(addr))
 }

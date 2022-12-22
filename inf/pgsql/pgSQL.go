@@ -6,6 +6,7 @@ import (
 	"github.com/labstack/gommon/log"
 	"io/ioutil"
 	"userSL/models"
+	"userSL/pkg/config"
 )
 
 type pgSQL struct {
@@ -13,20 +14,21 @@ type pgSQL struct {
 }
 
 func GetPostgre() *pgSQL {
-	options := &pg.Options{
-		User:     "pgsql",
-		Password: "PASS",
-		Addr:     "postgres:5432",
-		Database: "pgdb",
-		PoolSize: 50,
-	}
-
-	con := pg.Connect(options)
+	con := pg.Connect(&pg.Options{
+		User:     *config.PGUser,
+		Password: *config.PGPass,
+		Addr:     *config.Address,
+		Database: *config.PGDB,
+		PoolSize: *config.PGPoolSize,
+	})
 	if con == nil {
 		log.Fatal("cannot connect to postgres")
 	}
 
-	//con.AddQueryHook(dbLogger{})
+	//Для захвата и логирования запросов
+	if *config.Debug {
+		con.AddQueryHook(dbLogger{})
+	}
 
 	return &pgSQL{con}
 }

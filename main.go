@@ -4,6 +4,7 @@ import (
 	_ "github.com/swaggo/files"
 	"userSL/inf/echo"
 	"userSL/inf/pgsql"
+	"userSL/pkg/config"
 	"userSL/pkg/logger"
 )
 
@@ -22,6 +23,6 @@ import (
 // @securityDefinitions.basic  BasicAuth
 func main() {
 	logger.Start()
-	pgsql.ReplaceTable("./table.sql")
-	echo.Start(":8000")
+	pgsql.ReplaceTable(*config.SQLScript)
+	echo.Start(*config.Address)
 }

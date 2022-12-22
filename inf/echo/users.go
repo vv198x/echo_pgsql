@@ -1,4 +1,4 @@
-package users
+package echo
 
 import (
 	"github.com/labstack/echo"
