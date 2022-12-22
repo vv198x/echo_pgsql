@@ -75,7 +75,7 @@ func (pg *pgSQL) Remove(login string, rule int) error {
 			from users
 			where rule = ?1)
 			`, login, models.Admin)
-		fmt.Println(err)
+
 		return err
 
 	}

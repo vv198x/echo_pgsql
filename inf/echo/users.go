@@ -1,7 +1,6 @@
 package echo
 
 import (
-	"fmt"
 	"github.com/labstack/echo"
 	"log"
 	"net/http"
@@ -20,22 +19,11 @@ import (
 // @Failure	500
 // @Router /{login} [get]
 func Read(c echo.Context) error {
-	db, _ := c.Get("db").(pgsql.Storage)
+	user := *(c.Get("user").(*models.User))
 
-	login := c.Param("login")
-
-	user, err := db.Load(login)
 	//Не выводить пароль. Так занулил, если тип сменится.
 	user.Password = models.User{}.Password
-	if err == nil && len(user.Login) != 0 {
-		return c.JSON(http.StatusOK, &user)
-	} else {
-		return echo.NewHTTPError(http.StatusNotFound, err.Error())
-	}
-
-	log.Println("DB error", err)
-
-	return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	return c.JSON(http.StatusOK, &user)
 }
 
 // Read godoc
@@ -46,7 +34,6 @@ func Read(c echo.Context) error {
 // @Failure	500
 // @Router / [get]
 func ReadAll(c echo.Context) error {
-	fmt.Println(c.Param("login"))
 	db, _ := c.Get("db").(pgsql.Storage)
 	users, err := db.LoadAll()
 	if err == nil {
@@ -105,24 +92,18 @@ func Create(c echo.Context) error {
 // @Failure	500
 // @Router /{login} [put]
 func Update(c echo.Context) error {
-	user := new(models.User)
-
 	db, _ := c.Get("db").(pgsql.Storage)
-
-	c.Bind(user)
-	err := c.Validate(user)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-	}
+	user := c.Get("user").(*models.User)
 
 	oldLogin := c.Param("login")
-	err = db.Change(oldLogin, user)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, err.Error())
-	} else {
+
+	// Передаю ссылку на user, для sql.returning
+	err := db.Change(oldLogin, user)
+	if err == nil {
 		return c.JSON(http.StatusAccepted, user)
 	}
 
+	log.Println("DB error ", err)
 	return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 }
 
