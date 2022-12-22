@@ -65,9 +65,9 @@ func Create(c echo.Context) error {
 	if err == nil {
 		return c.JSON(http.StatusCreated, user)
 	}
-
-	if strings.Contains(err.Error(), "duplicate") {
-		return echo.NewHTTPError(http.StatusConflict, err.Error())
+	//При OnConflict возращается "pg: no rows in result set"
+	if strings.Contains(err.Error(), "no rows") {
+		return echo.NewHTTPError(http.StatusConflict, "User exists")
 	}
 
 	log.Println("DB error ", err)
@@ -121,5 +121,6 @@ func Delete(c echo.Context) error {
 		return c.NoContent(http.StatusOK)
 	}
 
+	log.Println("DB error ", err)
 	return echo.NewHTTPError(http.StatusOK, err.Error())
 }

@@ -4,10 +4,10 @@ CREATE TABLE users
 (
     login VARCHAR(20) NOT NULL UNIQUE PRIMARY KEY,
     password VARCHAR(20) NOT NULL,
-    rule INTEGER NOT NULL,
+    rule INTEGER,
     name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
-    dob INTEGER NOT NULL
+    dob INTEGER
 );
 
 INSERT INTO users

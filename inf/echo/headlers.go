@@ -74,7 +74,7 @@ func checkLastAdmin(next echo.HandlerFunc) echo.HandlerFunc {
 		user := *(c.Get("user").(*models.User))
 
 		if user.Rule == models.Admin {
-			// LastAdmin Запрос количества админов, если один то True
+
 			if db.LastAdmin() {
 				log.Println("Attempt to remove the last admin")
 				return c.JSON(http.StatusBadRequest, models.JSONResult{"Do not delete. This is the last admin!"})

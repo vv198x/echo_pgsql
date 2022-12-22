@@ -49,7 +49,7 @@ func (pg *pgSQL) LoadAll() ([]models.User, error) {
 
 func (pg *pgSQL) Save(user *models.User) error {
 
-	_, err := pg.c.Model(user).Returning("*").Insert()
+	_, err := pg.c.Model(user).OnConflict("(login) DO NOTHING").Returning("*").Insert()
 	return err
 }
 func (pg *pgSQL) Change(oldLogin string, user *models.User) error {
@@ -58,14 +58,14 @@ func (pg *pgSQL) Change(oldLogin string, user *models.User) error {
 	return err
 }
 
-func (pg *pgSQL) LastAdmin() bool {
-	var count int
-	_, err := pg.c.Query(&count, `select COUNT(*) from users where rule = 0`)
-	if err == nil && count == 1 {
-		return true
-	}
-	return false
+func (pg *pgSQL) LastAdmin() (ok bool) {
+	//Запрос вернет 1 если есть только один администратор
+	pg.c.Query(&ok, `select cast(case when COUNT(*) > 1 then 0 else 1 end AS BIT)
+							from users 
+							where rule = ?0`, models.Admin)
+	return
 }
+
 func (pg *pgSQL) Remove(login string, rule int) error {
 	if rule == models.Admin {
 		//Запрос удалить админа, выполнится если админы ещё есть.
