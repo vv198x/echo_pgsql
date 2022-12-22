@@ -3,50 +3,17 @@ package echo
 import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-	"log"
-	"net/http"
-	"userSL/inf/pgsql"
-	"userSL/models"
 )
 
 func headlers(e *echo.Echo) {
+	root := e.Group("/api/users/v1")
+	login := e.Group("/api/users/v1/:login")
 
-	e.POST("/api/users/v1/", Create, middleware.BasicAuth(forAdmin))
-	e.PUT("/api/users/v1/:login", Update, middleware.BasicAuth(forAdmin))
-	e.DELETE("/api/users/v1/:login", Delete, middleware.BasicAuth(forAdmin))
-	// Для пакета swag разделил Read
-	e.GET("/api/users/v1/", ReadAll, middleware.BasicAuth(forAll))
-	e.GET("/api/users/v1/:login", Read, middleware.BasicAuth(forAll))
+	root.POST("/", Create, middleware.BasicAuth(forAdmin))
+	login.PUT("", Update, middleware.BasicAuth(forAdmin))
+	login.DELETE("", Delete, checkLastAdmin, middleware.BasicAuth(forAdmin))
+	// Для пакета swag разделил Read. И не получилось в одну совместить
+	root.GET("/", ReadAll, middleware.BasicAuth(forAll))
+	login.GET("", Read, middleware.BasicAuth(forAll))
 
-}
-
-func forAdmin(login, pass string, c echo.Context) (bool, error) {
-	db, _ := c.Get("db").(pgsql.Storage)
-	u, err := db.Load(login)
-	if err == nil && u.Password == pass {
-
-		if u.Rule == models.Admin {
-			return true, nil
-		} else {
-			log.Println("No access rights ", login)
-			c.String(http.StatusForbidden, "forbidden")
-		}
-	}
-	return false, err
-}
-
-func forAll(login, pass string, c echo.Context) (bool, error) {
-	db, _ := c.Get("db").(pgsql.Storage)
-	u, err := db.Load(login)
-	if err == nil && u.Password == pass {
-
-		if u.Rule == models.Lock {
-			log.Println("No access rights ", login)
-			c.String(http.StatusForbidden, "forbidden")
-			return false, err
-		} else {
-			return true, nil
-		}
-	}
-	return false, err
 }

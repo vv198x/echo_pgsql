@@ -1,6 +1,7 @@
 package echo
 
 import (
+	"fmt"
 	"github.com/labstack/echo"
 	"log"
 	"net/http"
@@ -32,7 +33,8 @@ func Read(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, err.Error())
 	}
 
-	log.Println("DB error ", err)
+	log.Println("DB error", err)
+
 	return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 }
 
@@ -44,6 +46,7 @@ func Read(c echo.Context) error {
 // @Failure	500
 // @Router / [get]
 func ReadAll(c echo.Context) error {
+	fmt.Println(c.Param("login"))
 	db, _ := c.Get("db").(pgsql.Storage)
 	users, err := db.LoadAll()
 	if err == nil {
@@ -129,17 +132,19 @@ func Update(c echo.Context) error {
 // @Produce json
 // @Param login path string true "User login"
 // @Success 200
+// @Failure	400 {object} models.JSONResult{message=string} "Attempt to remove the last admin"
+// @Failure	404 {object} models.JSONResult{message=string} "Not found"
 // @Failure	500
 // @Router /{login} [delete]
 func Delete(c echo.Context) error {
 	db, _ := c.Get("db").(pgsql.Storage)
+	user := *(c.Get("user").(*models.User))
 
-	login := c.Param("login")
-	err := db.Remove(login)
+	err := db.Remove(user.Login, user.Rule)
 
 	if err == nil {
 		return c.NoContent(http.StatusOK)
 	}
 
-	return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	return echo.NewHTTPError(http.StatusOK, err.Error())
 }

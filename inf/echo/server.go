@@ -5,12 +5,13 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"userSL/inf/pgsql"
+	"userSL/pkg/config"
 )
 
 func Start(addr string) {
 	e := echo.New()
 
-	db := pgsql.GetTestDb()
+	db := pgsql.GetPostgre()
 	defer db.CloseDB()
 
 	e.Use(ContextDB(db))
@@ -18,7 +19,9 @@ func Start(addr string) {
 		Format: "method=${method}, uri=${uri}, status=${status}\n",
 		//Output: logger.LogFile,
 	}))
-	e.Use(middleware.Recover())
+	if *config.Debug == false {
+		e.Use(middleware.Recover())
+	}
 	e.Validator = &CustomValidator{Validator: validator.New()}
 
 	headlers(e)

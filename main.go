@@ -22,6 +22,7 @@ import (
 
 // @securityDefinitions.basic  BasicAuth
 func main() {
+	config.Load()
 	logger.Start()
 	pgsql.ReplaceTable(*config.SQLScript)
 	echo.Start(*config.Address)

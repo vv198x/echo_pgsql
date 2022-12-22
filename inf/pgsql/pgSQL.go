@@ -17,7 +17,7 @@ func GetPostgre() *pgSQL {
 	con := pg.Connect(&pg.Options{
 		User:     *config.PGUser,
 		Password: *config.PGPass,
-		Addr:     *config.Address,
+		Addr:     *config.PGAddr,
 		Database: *config.PGDB,
 		PoolSize: *config.PGPoolSize,
 	})
@@ -56,7 +56,29 @@ func (pg *pgSQL) Change(oldLogin string, user *models.User) error {
 
 	return err
 }
-func (pg *pgSQL) Remove(login string) error {
+
+func (pg *pgSQL) LastAdmin() bool {
+	var count int
+	_, err := pg.c.Query(&count, `select COUNT(*) from users where rule = 0`)
+	if err == nil && count == 1 {
+		return true
+	}
+	return false
+}
+func (pg *pgSQL) Remove(login string, rule int) error {
+	if rule == models.Admin {
+		//Запрос удалить админа, выполнится если админы ещё есть.
+		_, err := pg.c.Exec(`
+		delete
+		from users
+		where login = ?0 and 1 < (select count(*)
+			from users
+			where rule = ?1)
+			`, login, models.Admin)
+		fmt.Println(err)
+		return err
+
+	}
 	_, err := pg.c.Model(&models.User{}).Where("login = ?0", login).Delete()
 	return err
 }
@@ -69,8 +91,7 @@ func (pg *pgSQL) CloseDB() error {
 type dbLogger struct{}
 
 func (d dbLogger) BeforeQuery(q *pg.QueryEvent) {
-	logPG := q.Result
-	log.Printf("%v \n", logPG)
+
 }
 
 func (d dbLogger) AfterQuery(q *pg.QueryEvent) {
@@ -82,7 +103,7 @@ func ReplaceTable(file string) {
 	db := GetPostgre()
 	defer db.CloseDB()
 
-	c, ioErr := ioutil.ReadFile("./table.sql")
+	c, ioErr := ioutil.ReadFile(file)
 	if ioErr == nil {
 		_, err := db.c.Exec(string(c))
 		if err != nil {

@@ -42,11 +42,15 @@ func (*testBD) Change(oldLogin string, user *models.User) error {
 	}
 	return errors.New("User not found")
 }
-func (*testBD) Remove(login string) error {
+func (*testBD) Remove(login string, rule int) error {
 	if login == "admin" || login == "user" {
 		return nil
 	}
 	return errors.New("User not found")
+}
+
+func (*testBD) LastAdmin() bool {
+	return true
 }
 
 func (*testBD) CloseDB() error {

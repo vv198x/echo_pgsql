@@ -18,6 +18,6 @@ var (
 )
 
 // Для го тестов. Парсинг нужно вынести из init
-func init() {
+func Load() {
 	flag.Parse()
 }

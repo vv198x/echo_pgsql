@@ -7,6 +7,7 @@ type Storage interface {
 	LoadAll() ([]models.User, error)
 	Save(user *models.User) error
 	Change(oldLogin string, user *models.User) error
-	Remove(login string) error
+	Remove(login string, rule int) error
+	LastAdmin() bool
 	CloseDB() error
 }
