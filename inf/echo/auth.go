@@ -85,6 +85,7 @@ func checkToken(next echo.HandlerFunc) echo.HandlerFunc {
 func forAdmin(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		rule := c.Get("rule").(float64)
+
 		if rule != models.Admin {
 			return echo.NewHTTPError(http.StatusForbidden, "Forbidden")
 		}
@@ -95,6 +96,7 @@ func forAdmin(next echo.HandlerFunc) echo.HandlerFunc {
 func forAll(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		rule := c.Get("rule").(float64)
+
 		if rule == models.Lock {
 			return echo.NewHTTPError(http.StatusLocked, "Locked")
 		}
