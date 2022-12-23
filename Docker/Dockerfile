@@ -1,8 +1,11 @@
 FROM golang:1.19.3-alpine
 
-COPY build1 /userSL/
-COPY table.sql /userSL/
+WORKDIR /usr/local/go/src/userSL/
 
-WORKDIR /userSL
+ADD https://github.com/vv198x/userSL/archive/refs/tags/v0.0.2.tar.gz .
 
-ENTRYPOINT ["./build1"]
+RUN tar zxvf v0.0.1.tar.gz -C /usr/local/go/src/userSL/ --strip-components=1
+RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o userSL
+
+
+ENTRYPOINT ["./userSL"]
