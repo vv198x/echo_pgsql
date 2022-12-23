@@ -7,9 +7,7 @@ CREATE TABLE users
     rule INTEGER,
     name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
-    dob INTEGER,
-    dobNew DATE NOT NULL
-
+    dob INTEGER
 );
 
 INSERT INTO users
