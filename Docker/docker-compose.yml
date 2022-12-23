@@ -23,6 +23,7 @@ services:
     networks:
       - backend
       - frontend
+    restart: always
     depends_on:
       - "postgres"
     ports:

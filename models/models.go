@@ -15,7 +15,3 @@ const (
 	Read
 	Lock
 )
-
-type JSONResult struct {
-	Message string `json:"message"`
-}

@@ -18,7 +18,9 @@ import (
 //	@tag.name	admins
 //	@tag.description Admin access
 //	@tag.name	read
-//	@tag.description Read only access. For all but blocked
+//	@tag.description Read only access. For all authorized but not blocked
+//	@tag.name	auth
+//	@tag.description For authorization
 
 // @securityDefinitions.basic  BasicAuth
 func main() {

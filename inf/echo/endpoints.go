@@ -13,13 +13,14 @@ import (
 // @Tags read
 // @Summary Retrieves user based on given Login
 // @Produce json
+// @Param token path string true "Authorization token"
 // @Param login path string true "User login"
 // @Success 200 {object} models.User
-// @Failure	404 {object} models.JSONResult{message=string} "Not found"
+// @Failure	404 {object} JSONResult{message=string} "Not found"
 // @Failure	500
 // @Router /{login} [get]
 func Read(c echo.Context) error {
-	user := *(c.Get("user").(*models.User))
+	user := *(c.Get("userSL").(*models.User))
 
 	//Не выводить пароль. Так занулил, если тип сменится.
 	user.Password = models.User{}.Password
@@ -30,11 +31,12 @@ func Read(c echo.Context) error {
 // @Tags read
 // @Summary Retrieves users
 // @Produce json
+// @Param token path string true "Authorization token"
 // @Success 200 {object} models.User
 // @Failure	500
 // @Router / [get]
 func ReadAll(c echo.Context) error {
-	db, _ := c.Get("db").(pgsql.Storage)
+	db := c.Get("db").(pgsql.Storage)
 	users, err := db.LoadAll()
 	if err == nil {
 		for i := range users {
@@ -51,15 +53,16 @@ func ReadAll(c echo.Context) error {
 // @Summary Create new user
 // @Tags admins
 // @Produce json
+// @Param token path string true "Authorization token"
 // @Param message body models.User true  "New user"
 // @Success 201 {object} models.User
-// @Failure	400 {object} models.JSONResult{message=string} "Validation error"
-// @Failure	409 {object} models.JSONResult{message=string} "User with this login exists"
+// @Failure	400 {object} JSONResult{message=string} "Validation error"
+// @Failure	409 {object} JSONResult{message=string} "User with this login exists"
 // @Failure	500
 // @Router / [post]
 func Create(c echo.Context) error {
 	user := c.Get("validUser").(*models.User)
-	db, _ := c.Get("db").(pgsql.Storage)
+	db := c.Get("db").(pgsql.Storage)
 
 	err := db.Save(user)
 	if err == nil {
@@ -78,15 +81,16 @@ func Create(c echo.Context) error {
 // @Summary Update user on given Login
 // @Tags admins
 // @Produce json
+// @Param token path string true "Authorization token"
 // @Param login path string true "User login"
 // @Param message body models.User true  "Update user"
 // @Success 202 {object} models.User
-// @Failure	404 {object} models.JSONResult{message=string} "Not found"
-// @Failure	400 {object} models.JSONResult{message=string} "Validation error"
+// @Failure	404 {object} JSONResult{message=string} "Not found"
+// @Failure	400 {object} JSONResult{message=string} "Validation error"
 // @Failure	500
 // @Router /{login} [put]
 func Update(c echo.Context) error {
-	db, _ := c.Get("db").(pgsql.Storage)
+	db := c.Get("db").(pgsql.Storage)
 	user := c.Get("validUser").(*models.User)
 
 	oldLogin := c.Param("login")
@@ -105,15 +109,16 @@ func Update(c echo.Context) error {
 // @Tags admins
 // @Summary Delete user on given Login
 // @Produce json
+// @Param token path string true "Authorization token"
 // @Param login path string true "User login"
 // @Success 200
-// @Failure	400 {object} models.JSONResult{message=string} "Attempt to remove the last admin"
-// @Failure	404 {object} models.JSONResult{message=string} "Not found"
+// @Failure	400 {object} JSONResult{message=string} "Attempt to remove the last admin"
+// @Failure	404 {object} JSONResult{message=string} "Not found"
 // @Failure	500
 // @Router /{login} [delete]
 func Delete(c echo.Context) error {
-	db, _ := c.Get("db").(pgsql.Storage)
-	user := *(c.Get("user").(*models.User))
+	db := c.Get("db").(pgsql.Storage)
+	user := *(c.Get("userSL").(*models.User))
 
 	err := db.Remove(user.Login, user.Rule)
 
@@ -122,5 +127,5 @@ func Delete(c echo.Context) error {
 	}
 
 	log.Println("DB error ", err)
-	return echo.NewHTTPError(http.StatusOK, err.Error())
+	return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 }

@@ -24,6 +24,11 @@ func Start(addr string) {
 	}
 	e.Validator = &CustomValidator{Validator: validator.New()}
 
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{echo.GET, echo.POST, echo.PUT, echo.DELETE},
+	}))
+
 	headlers(e)
 
 	e.Logger.Fatal(e.Start(addr))

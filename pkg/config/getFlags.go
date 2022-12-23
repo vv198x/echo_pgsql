@@ -7,6 +7,7 @@ import (
 // Не в переменных окружения. И не в файле
 // Потому что - сразу дефолтные значения можно указать и быстрее.
 var (
+	JWTkey     = flag.String("JWTkey", "SECRET", "Secret for JWT")
 	Address    = flag.String("addr", ":8000", "Address and port for echo")
 	SQLScript  = flag.String("SQLScript", "./Docker/table.sql", "Script for first load")
 	PGUser     = flag.String("PGUser", "pgsql", "User name for PostgreSQL")
