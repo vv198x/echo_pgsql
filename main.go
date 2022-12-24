@@ -26,6 +26,5 @@ import (
 func main() {
 	logger.Start()
 	migrations.Start()
-	//pgsql.ReplaceTable(cfg.Get().SQLScript)
 	echo.Start(cfg.Get().Address)
 }
