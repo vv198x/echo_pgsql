@@ -1,8 +1,9 @@
 package main
 
 import (
+	"fmt"
 	_ "github.com/swaggo/files"
-	"userSL/inf/echo"
+	"golang.org/x/crypto/bcrypt"
 	"userSL/inf/pgsql"
 	"userSL/pkg/config"
 	"userSL/pkg/logger"
@@ -27,5 +28,11 @@ func main() {
 	config.Load()
 	logger.Start()
 	pgsql.ReplaceTable(*config.SQLScript)
-	echo.Start(*config.Address)
+	//echo.Start(*config.Address)
+	buf, _ := bcrypt.GenerateFromPassword([]byte("admin"), bcrypt.DefaultCost)
+	fmt.Println(string(buf))
+	buf, _ = bcrypt.GenerateFromPassword([]byte("user"), bcrypt.DefaultCost)
+	fmt.Println(string(buf))
+	buf, _ = bcrypt.GenerateFromPassword([]byte("lock"), bcrypt.DefaultCost)
+	fmt.Println(string(buf))
 }

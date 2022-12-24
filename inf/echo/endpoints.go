@@ -1,8 +1,8 @@
 package echo
 
 import (
-	"fmt"
 	"github.com/labstack/echo"
+	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"
 	"strings"
@@ -64,9 +64,12 @@ func ReadAll(c echo.Context) error {
 func Create(c echo.Context) error {
 	user := c.Get("validUser").(*models.User)
 	db := c.Get("db").(pgsql.Storage)
-	fmt.Println(2, user.Name)
+
+	buf, _ := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	user.Password = string(buf)
+
 	err := db.Save(user)
-	fmt.Println(3, user.Name)
+
 	if err == nil {
 		return c.JSON(http.StatusCreated, user)
 	}
@@ -95,8 +98,10 @@ func Update(c echo.Context) error {
 	db := c.Get("db").(pgsql.Storage)
 	user := c.Get("validUser").(*models.User)
 
-	oldLogin := c.Param("login")
+	buf, _ := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	user.Password = string(buf)
 
+	oldLogin := c.Param("login")
 	// Передаю ссылку на user, для sql.returning
 	err := db.Change(oldLogin, user)
 	if err == nil {

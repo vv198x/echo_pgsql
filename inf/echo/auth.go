@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
+	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"
 	"userSL/inf/pgsql"
@@ -39,7 +40,8 @@ func getToken(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusLocked, "Locked")
 	}
 
-	if res.Password != user.Password {
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(res.Password))
+	if err != nil {
 		log.Println("Wrong password ", user.Login)
 		return echo.NewHTTPError(http.StatusUnauthorized, "Authentication error")
 	}
