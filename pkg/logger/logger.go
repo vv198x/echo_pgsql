@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"time"
-	"userSL/pkg/config"
+	"userSL/pkg/cfg"
 )
 
 const logDir = "./log"
@@ -29,7 +29,7 @@ func Start() {
 	if err != nil {
 		log.Fatalln("Dont create log file")
 	}
-	if !*config.Debug {
+	if cfg.Get().Debug {
 		log.SetOutput(LogFile)
 	}
 }

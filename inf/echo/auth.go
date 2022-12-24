@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"userSL/inf/pgsql"
 	"userSL/models"
-	"userSL/pkg/config"
+	"userSL/pkg/cfg"
 )
 
 // getToken godoc
@@ -51,7 +51,7 @@ func getToken(c echo.Context) error {
 		"rule":  user.Rule,
 	})
 
-	tokenString, err := token.SignedString([]byte(*config.JWTkey))
+	tokenString, err := token.SignedString([]byte(cfg.Get().JWTkey))
 	if err != nil {
 		log.Println("Can't create token ", err)
 		return echo.NewHTTPError(http.StatusInternalServerError, "Can't create token")
@@ -74,7 +74,7 @@ func checkToken(next echo.HandlerFunc) echo.HandlerFunc {
 				return nil, fmt.Errorf("Unexpected Signing Method: %v", token.Header["alg"])
 			}
 
-			return []byte(*config.JWTkey), nil
+			return []byte(cfg.Get().JWTkey), nil
 		})
 
 		if !token.Valid || err != nil {

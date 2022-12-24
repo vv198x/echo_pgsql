@@ -1,11 +1,10 @@
 package main
 
 import (
-	"fmt"
 	_ "github.com/swaggo/files"
-	"golang.org/x/crypto/bcrypt"
-	"userSL/inf/pgsql"
-	"userSL/pkg/config"
+	"userSL/inf/echo"
+	"userSL/migrations"
+	"userSL/pkg/cfg"
 	"userSL/pkg/logger"
 )
 
@@ -25,14 +24,8 @@ import (
 
 // @securityDefinitions.basic  BasicAuth
 func main() {
-	config.Load()
 	logger.Start()
-	pgsql.ReplaceTable(*config.SQLScript)
-	//echo.Start(*config.Address)
-	buf, _ := bcrypt.GenerateFromPassword([]byte("admin"), bcrypt.DefaultCost)
-	fmt.Println(string(buf))
-	buf, _ = bcrypt.GenerateFromPassword([]byte("user"), bcrypt.DefaultCost)
-	fmt.Println(string(buf))
-	buf, _ = bcrypt.GenerateFromPassword([]byte("lock"), bcrypt.DefaultCost)
-	fmt.Println(string(buf))
+	migrations.Start()
+	//pgsql.ReplaceTable(cfg.Get().SQLScript)
+	echo.Start(cfg.Get().Address)
 }

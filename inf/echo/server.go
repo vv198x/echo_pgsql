@@ -5,7 +5,7 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"userSL/inf/pgsql"
-	"userSL/pkg/config"
+	"userSL/pkg/cfg"
 )
 
 func Start(addr string) {
@@ -19,7 +19,8 @@ func Start(addr string) {
 		Format: "method=${method}, uri=${uri}, status=${status}\n",
 		//Output: logger.LogFile,
 	}))
-	if *config.Debug == false {
+
+	if cfg.Get().Debug == false {
 		e.Use(middleware.Recover())
 	}
 	e.Validator = &CustomValidator{Validator: validator.New()}

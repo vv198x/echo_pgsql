@@ -3,7 +3,7 @@ TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6ImFkbWluIiwicnVsZSI6MH0.
 HOST="localhost:8000"
 
 curl -H "Content-Type: application/json" -X POST \
--d '{"login":"user","password":"user"}' \
+-d '{"login":"admin","password":"admin"}' \
 http://$HOST/api/users/v1/auth/
 
 curl -H "Content-Type: application/json" -X POST \

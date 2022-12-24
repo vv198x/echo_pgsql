@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS users CASCADE;
-
 CREATE TABLE users
 (
     login VARCHAR(20) NOT NULL UNIQUE PRIMARY KEY,
@@ -21,13 +19,3 @@ RETURNING *;
 INSERT INTO users
 VALUES ('lock', '$2a$10$W4Sky819LgwPaK7ABzW/L.86VXsp8VlLyjciiaolnmkTCcxoJjlIm', 2, 'first name lock', 'last name lock', 200000000)
 RETURNING *;
-
-ALTER TABLE users
-    ALTER COLUMN dob
-        TYPE INTEGER
-        USING  extract(epoch from dob)::integer;
-
-ALTER TABLE users
-    ALTER COLUMN dob
-        TYPE timestamp with time zone
-        USING to_timestamp(dob);
