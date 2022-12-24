@@ -19,6 +19,7 @@ import (
 // @Success 200 {object} JSONLogin{login=string,password=string}
 // @Failure	400 {object} JSONResult{message=string} "Bad Request"
 // @Failure	401 {object} JSONResult{message=string} "Authentication error"
+// @Failure	423 {object} JSONResult{message=string} "Locked user"
 // @Failure	500
 // @Router / [get]
 func getToken(c echo.Context) error {
@@ -33,8 +34,13 @@ func getToken(c echo.Context) error {
 	db, _ := c.Get("db").(pgsql.Storage)
 	user, err := db.Load(res.Login)
 
+	if user.Rule == models.Lock {
+		log.Println("Blocked user ", user.Login)
+		return echo.NewHTTPError(http.StatusLocked, "Locked")
+	}
+
 	if res.Password != user.Password {
-		log.Println("Wrong password")
+		log.Println("Wrong password ", user.Login)
 		return echo.NewHTTPError(http.StatusUnauthorized, "Authentication error")
 	}
 
