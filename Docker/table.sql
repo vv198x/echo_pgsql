@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS users_db CASCADE;
 
 CREATE TABLE users
 (
@@ -7,17 +8,17 @@ CREATE TABLE users
     rule INTEGER,
     name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
-    dob INTEGER
+    dob DATE NOT NULL
 );
 
 INSERT INTO users
-VALUES ('admin', 'admin', 0, 'first name Admin', 'last name Admin', 0)
+VALUES ('admin', 'admin', 0, 'first name Admin', 'last name Admin', '01.01.1970')
 RETURNING *;
 
 INSERT INTO users
-VALUES ('user', 'user', 1, 'first name user', 'last name user', 1000000)
+VALUES ('user', 'user', 1, 'first name user', 'last name user', '11.11.1997')
 RETURNING *;
 
 INSERT INTO users
-VALUES ('lock', 'lock', 2, 'first name lock', 'last name lock', 2000000)
+VALUES ('lock', 'lock', 2, 'first name lock', 'last name lock', '12.21.2000')
 RETURNING *;

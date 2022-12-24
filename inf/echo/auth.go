@@ -34,7 +34,7 @@ func getToken(c echo.Context) error {
 	user, err := db.Load(res.Login)
 
 	if res.Password != user.Password {
-		log.Println("Wrong password ")
+		log.Println("Wrong password")
 		return echo.NewHTTPError(http.StatusUnauthorized, "Authentication error")
 	}
 

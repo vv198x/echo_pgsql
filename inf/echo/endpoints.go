@@ -1,6 +1,7 @@
 package echo
 
 import (
+	"fmt"
 	"github.com/labstack/echo"
 	"log"
 	"net/http"
@@ -63,8 +64,9 @@ func ReadAll(c echo.Context) error {
 func Create(c echo.Context) error {
 	user := c.Get("validUser").(*models.User)
 	db := c.Get("db").(pgsql.Storage)
-
+	fmt.Println(2, user.Name)
 	err := db.Save(user)
+	fmt.Println(3, user.Name)
 	if err == nil {
 		return c.JSON(http.StatusCreated, user)
 	}

@@ -9,8 +9,8 @@ type testBD struct {
 }
 
 var (
-	admin = models.User{Login: "admin", Password: "admin", Rule: models.Admin, Name: "first name Admin", LastName: "last name Admin", Dob: 0}
-	user  = models.User{Login: "user", Password: "user", Rule: models.Read, Name: "first name user", LastName: "last name user", Dob: 1000000}
+	admin = models.User{Login: "admin", Password: "admin", Rule: models.Admin, Name: "first name Admin", LastName: "last name Admin", Dob: "01-01-1970"}
+	user  = models.User{Login: "user", Password: "user", Rule: models.Read, Name: "first name user", LastName: "last name user", Dob: "21-10-2000"}
 )
 
 func GetTestDb() *testBD {
@@ -18,6 +18,7 @@ func GetTestDb() *testBD {
 }
 
 func (*testBD) Load(login string) (models.User, error) {
+
 	if login == "admin" {
 		return admin, nil
 	}

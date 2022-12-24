@@ -17,6 +17,35 @@ const docTemplate = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "read"
+                ],
+                "summary": "Retrieves users",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
             "post": {
                 "produces": [
                     "application/json"
@@ -26,6 +55,13 @@ const docTemplate = `{
                 ],
                 "summary": "Create new user",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    },
                     {
                         "description": "New user",
                         "name": "message",
@@ -48,7 +84,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/models.JSONResult"
+                                    "$ref": "#/definitions/echo.JSONResult"
                                 },
                                 {
                                     "type": "object",
@@ -66,7 +102,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/models.JSONResult"
+                                    "$ref": "#/definitions/echo.JSONResult"
                                 },
                                 {
                                     "type": "object",
@@ -97,6 +133,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "Authorization token",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "User login",
                         "name": "login",
                         "in": "path",
@@ -115,7 +158,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/models.JSONResult"
+                                    "$ref": "#/definitions/echo.JSONResult"
                                 },
                                 {
                                     "type": "object",
@@ -142,6 +185,13 @@ const docTemplate = `{
                 ],
                 "summary": "Update user on given Login",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization token",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "User login",
@@ -171,7 +221,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/models.JSONResult"
+                                    "$ref": "#/definitions/echo.JSONResult"
                                 },
                                 {
                                     "type": "object",
@@ -189,7 +239,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/models.JSONResult"
+                                    "$ref": "#/definitions/echo.JSONResult"
                                 },
                                 {
                                     "type": "object",
@@ -218,6 +268,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "Authorization token",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "User login",
                         "name": "login",
                         "in": "path",
@@ -228,6 +285,42 @@ const docTemplate = `{
                     "200": {
                         "description": "OK"
                     },
+                    "400": {
+                        "description": "Attempt to remove the last admin",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/echo.JSONResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/echo.JSONResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error"
                     }
@@ -236,7 +329,22 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "models.JSONResult": {
+        "echo.JSONLogin": {
+            "type": "object",
+            "required": [
+                "login",
+                "password"
+            ],
+            "properties": {
+                "login": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "echo.JSONResult": {
             "type": "object",
             "properties": {
                 "message": {
@@ -251,8 +359,7 @@ const docTemplate = `{
                 "last_name",
                 "login",
                 "name",
-                "password",
-                "rule"
+                "password"
             ],
             "properties": {
                 "dob": {
@@ -271,7 +378,8 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "rule": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 0
                 }
             }
         }
@@ -287,8 +395,12 @@ const docTemplate = `{
             "name": "admins"
         },
         {
-            "description": "Read only access. For all but blocked",
+            "description": "Read only access. For all authorized but not blocked",
             "name": "read"
+        },
+        {
+            "description": "For authorization",
+            "name": "auth"
         }
     ]
 }`

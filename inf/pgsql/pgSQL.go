@@ -34,33 +34,44 @@ func GetPostgre() *pgSQL {
 }
 
 func (pg *pgSQL) Load(login string) (models.User, error) {
-	user := new(models.User)
+	u := getDB(&models.User{})
 
-	err := pg.c.Model(user).Where("login = ?0", login).Select()
-	return *user, err
+	err := pg.c.Model(u).Where("login = ?0", login).Select()
+	return u.convUser(), err
 }
 
 func (pg *pgSQL) LoadAll() ([]models.User, error) {
-	users := new([]models.User)
+	usersDB := []userDB{}
 
-	err := pg.c.Model(users).Select()
-	return *users, err
+	err := pg.c.Model(&usersDB).Select()
+
+	users := []models.User{}
+	for _, u := range usersDB {
+		users = append(users, u.convUser())
+	}
+
+	return users, err
 }
 
 func (pg *pgSQL) Save(user *models.User) error {
+	u := getDB(user)
 
-	_, err := pg.c.Model(user).OnConflict("(login) DO NOTHING").Returning("*").Insert()
+	_, err := pg.c.Model(u).OnConflict("(login) DO NOTHING").Returning("*").Insert()
+	//Вернуть результат Returning
+	*user = u.convUser()
 	return err
 }
 func (pg *pgSQL) Change(oldLogin string, user *models.User) error {
+	u := getDB(user)
 
-	_, err := pg.c.Model(user).Where("login = ?0", oldLogin).Returning("*").Update()
+	_, err := pg.c.Model(u).Where("login = ?0", oldLogin).Returning("*").Update()
+	*user = u.convUser()
 	return err
 }
 
-func (pg *pgSQL) LastAdmin() (ok bool) {
+func (pg *pgSQL) LastAdmin() (last bool) {
 	//Запрос вернет 1 если есть только один администратор
-	pg.c.Query(&ok, `select cast(case when COUNT(*) > 1 then 0 else 1 end AS BIT)
+	pg.c.Query(&last, `select cast(case when COUNT(*) > 1 then 0 else 1 end AS BIT)
 							from users 
 							where rule = ?0`, models.Admin)
 	return
@@ -80,7 +91,7 @@ func (pg *pgSQL) Remove(login string, rule int) error {
 		return err
 
 	}
-	_, err := pg.c.Model(&models.User{}).Where("login = ?0", login).Delete()
+	_, err := pg.c.Model(&userDB{}).Where("login = ?0", login).Delete()
 	return err
 }
 
