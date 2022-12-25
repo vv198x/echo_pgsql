@@ -46,7 +46,11 @@ func migration(arg []string, init bool) {
 	defer db.Close()
 
 	if init {
-		oldVersion, newVersion, _ = migrations.Run(db, "init")
+		var found bool
+		_, _ = db.Query(&found, `SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='gopg_migrations'`)
+		if !found {
+			oldVersion, newVersion, _ = migrations.Run(db, "init")
+		}
 	} else {
 		oldVersion, newVersion, err = migrations.Run(db, arg...)
 	}
