@@ -7,5 +7,4 @@ ADD https://github.com/vv198x/userSL/archive/refs/tags/v0.0.6.tar.gz .
 RUN tar zxvf v0.0.6.tar.gz -C . --strip-components=1
 RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o userSL
 
-RUN ./userSL init
 ENTRYPOINT ["./userSL"]

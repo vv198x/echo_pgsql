@@ -26,16 +26,31 @@ func Start() {
 	flag.Parse()
 	arg := flag.Args()
 
+	if cfg.Get().Migration == "init" {
+		migration([]string{}, true)
+		os.Setenv("Migration", "")
+	}
+
+	migration(arg, false)
+}
+
+func migration(arg []string, init bool) {
+	var oldVersion, newVersion int64
+	var err error
 	db := pg.Connect(&pg.Options{
 		User:     cfg.Get().PGUser,
 		Password: cfg.Get().PGPass,
 		Addr:     cfg.Get().PGAddr,
 		Database: cfg.Get().PGDB,
-		PoolSize: 50,
 	})
 	defer db.Close()
 
-	oldVersion, newVersion, err := migrations.Run(db, arg...)
+	if init {
+		oldVersion, newVersion, err = migrations.Run(db, "init")
+	} else {
+		oldVersion, newVersion, err = migrations.Run(db, arg...)
+	}
+
 	if err != nil {
 		exitf(err.Error())
 	}

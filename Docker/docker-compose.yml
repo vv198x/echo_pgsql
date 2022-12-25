@@ -22,6 +22,7 @@ services:
       - frontend
     restart: always
     environment:
+      Migration: "init"
       JWTkey: "SECRET"
       addr: ":8000"
       PGUser: "pgsql"
