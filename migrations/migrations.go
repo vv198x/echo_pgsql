@@ -46,7 +46,7 @@ func migration(arg []string, init bool) {
 	defer db.Close()
 
 	if init {
-		oldVersion, newVersion, err = migrations.Run(db, "init")
+		oldVersion, newVersion, _ = migrations.Run(db, "init")
 	} else {
 		oldVersion, newVersion, err = migrations.Run(db, arg...)
 	}

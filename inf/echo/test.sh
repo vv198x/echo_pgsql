@@ -1,6 +1,6 @@
 #!/usr/bin/zsh
 TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6ImFkbWluIiwicnVsZSI6MH0.lhnrxwZZtcg1ZH47P_v4hEZEuUGLX8uB44OlYwvZ8ms"
-HOST="localhost:8000"
+HOST="$N:8000"
 
 curl -H "Content-Type: application/json" -X POST \
 -d '{"login":"admin","password":"admin"}' \

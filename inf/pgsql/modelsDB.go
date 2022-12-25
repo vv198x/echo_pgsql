@@ -30,7 +30,7 @@ func (uDB *userDB) convUser() models.User {
 func getDB(u *models.User) *userDB {
 	timestamp, err := time.Parse("02-01-2006", u.Dob)
 	if err != nil {
-		log.Println("Wrong dob")
+		log.Println("Wrong dob ", err)
 	}
 	return &userDB{
 		Login:    u.Login,
