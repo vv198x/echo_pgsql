@@ -17,7 +17,6 @@ func GetPostgre() *pgSQL {
 		Password: cfg.Get().PGPass,
 		Addr:     cfg.Get().PGAddr,
 		Database: cfg.Get().PGDB,
-		PoolSize: 50,
 	})
 	if con == nil {
 		log.Fatal("cannot connect to postgres")
