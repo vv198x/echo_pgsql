@@ -18,6 +18,11 @@ const docTemplate = `{
     "paths": {
         "/": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -25,15 +30,6 @@ const docTemplate = `{
                     "read"
                 ],
                 "summary": "Retrieves users",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Authorization token",
-                        "name": "token",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -47,6 +43,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -55,13 +56,6 @@ const docTemplate = `{
                 ],
                 "summary": "Create new user",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Authorization token",
-                        "name": "token",
-                        "in": "path",
-                        "required": true
-                    },
                     {
                         "description": "New user",
                         "name": "message",
@@ -121,8 +115,127 @@ const docTemplate = `{
                 }
             }
         },
+        "/auth/": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Authentication",
+                "parameters": [
+                    {
+                        "description": "Login, password",
+                        "name": "message",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/echo.JSONLogin"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "login": {
+                                            "type": "string"
+                                        },
+                                        "password": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Token",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/echo.JSONToken"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "token": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/echo.JSONResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/echo.JSONResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "423": {
+                        "description": "Locked user",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/echo.JSONResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/{login}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -131,13 +244,6 @@ const docTemplate = `{
                 ],
                 "summary": "Retrieves user based on given Login",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Authorization token",
-                        "name": "token",
-                        "in": "path",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "User login",
@@ -177,6 +283,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -185,13 +296,6 @@ const docTemplate = `{
                 ],
                 "summary": "Update user on given Login",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Authorization token",
-                        "name": "token",
-                        "in": "path",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "User login",
@@ -258,6 +362,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -266,13 +375,6 @@ const docTemplate = `{
                 ],
                 "summary": "Delete user on given Login",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Authorization token",
-                        "name": "token",
-                        "in": "path",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "User login",
@@ -352,6 +454,14 @@ const docTemplate = `{
                 }
             }
         },
+        "echo.JSONToken": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
         "models.User": {
             "type": "object",
             "required": [
@@ -363,7 +473,7 @@ const docTemplate = `{
             ],
             "properties": {
                 "dob": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "last_name": {
                     "type": "string"
@@ -385,29 +495,17 @@ const docTemplate = `{
         }
     },
     "securityDefinitions": {
-        "BasicAuth": {
-            "type": "basic"
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "token",
+            "in": "query"
         }
-    },
-    "tags": [
-        {
-            "description": "Admin access",
-            "name": "admins"
-        },
-        {
-            "description": "Read only access. For all authorized but not blocked",
-            "name": "read"
-        },
-        {
-            "description": "For authorization",
-            "name": "auth"
-        }
-    ]
+    }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.0.1",
+	Version:          "0.0.9",
 	Host:             "localhost:8000",
 	BasePath:         "/api/users/v1",
 	Schemes:          []string{"http"},

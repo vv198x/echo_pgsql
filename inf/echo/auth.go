@@ -13,16 +13,16 @@ import (
 )
 
 // getToken godoc
-// @Tags auth
 // @Summary Authentication
+// @Tags auth
 // @Produce json
-// @Param message body models.User true  "New user"
-// @Success 200 {object} JSONLogin{login=string,password=string}
+// @Param message body JSONLogin{login=string,password=string} true  "Login, password"
+// @Success 200 {object} JSONToken{token=string} "Token"
 // @Failure	400 {object} JSONResult{message=string} "Bad Request"
 // @Failure	401 {object} JSONResult{message=string} "Authentication error"
 // @Failure	423 {object} JSONResult{message=string} "Locked user"
 // @Failure	500
-// @Router / [get]
+// @Router /auth/ [post]
 func getToken(c echo.Context) error {
 	res := new(JSONLogin)
 

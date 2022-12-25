@@ -9,12 +9,15 @@ import (
 )
 
 // @title           Simple API
-// @version         0.0.1
+// @version         0.0.9
 // @description     Api server
 
 // @host      localhost:8000
 // @BasePath  /api/users/v1
 // @schemes http
+// @securityDefinitions.apikey ApiKeyAuth
+//	@in	query
+//	@name token
 //	@tag.name	admins
 //	@tag.description Admin access
 //	@tag.name	read
@@ -22,7 +25,6 @@ import (
 //	@tag.name	auth
 //	@tag.description For authorization
 
-// @securityDefinitions.basic  BasicAuth
 func main() {
 	logger.Start()
 	migrations.Start()

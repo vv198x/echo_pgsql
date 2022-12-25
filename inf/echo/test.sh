@@ -1,6 +1,6 @@
 #!/usr/bin/zsh
-TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6ImFkbWluIiwicnVsZSI6MH0.lhnrxwZZtcg1ZH47P_v4hEZEuUGLX8uB44OlYwvZ8ms"
-HOST="$N:8000"
+TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6ImFkbWluIiwicnVsZSI6MX0.hKFfa14ZTqsVI6SNIv6FqEmmRCaveEidrvviZ5lmN9Y"
+HOST="localhost:8000"
 
 curl -H "Content-Type: application/json" -X POST \
 -d '{"login":"admin","password":"admin"}' \
@@ -21,4 +21,4 @@ curl -H "Content-Type: application/json" -X DELETE \
 "http://$HOST/api/users/v1/new1?token=$TOKEN"
 
 
-curl "http://$HOST/api/users/v1/?token=$TOKEN"
+#curl "http://$HOST/api/users/v1/?token=$TOKEN"

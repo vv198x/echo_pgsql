@@ -14,11 +14,11 @@ import (
 // @Tags read
 // @Summary Retrieves user based on given Login
 // @Produce json
-// @Param token path string true "Authorization token"
 // @Param login path string true "User login"
 // @Success 200 {object} models.User
 // @Failure	404 {object} JSONResult{message=string} "Not found"
 // @Failure	500
+// @Security ApiKeyAuth
 // @Router /{login} [get]
 func Read(c echo.Context) error {
 	user := *(c.Get("userSL").(*models.User))
@@ -32,9 +32,9 @@ func Read(c echo.Context) error {
 // @Tags read
 // @Summary Retrieves users
 // @Produce json
-// @Param token path string true "Authorization token"
 // @Success 200 {object} models.User
 // @Failure	500
+// @Security ApiKeyAuth
 // @Router / [get]
 func ReadAll(c echo.Context) error {
 	db := c.Get("db").(pgsql.Storage)
@@ -54,12 +54,12 @@ func ReadAll(c echo.Context) error {
 // @Summary Create new user
 // @Tags admins
 // @Produce json
-// @Param token path string true "Authorization token"
 // @Param message body models.User true  "New user"
 // @Success 201 {object} models.User
 // @Failure	400 {object} JSONResult{message=string} "Validation error"
 // @Failure	409 {object} JSONResult{message=string} "User with this login exists"
 // @Failure	500
+// @Security ApiKeyAuth
 // @Router / [post]
 func Create(c echo.Context) error {
 	user := c.Get("validUser").(*models.User)
@@ -86,13 +86,13 @@ func Create(c echo.Context) error {
 // @Summary Update user on given Login
 // @Tags admins
 // @Produce json
-// @Param token path string true "Authorization token"
 // @Param login path string true "User login"
 // @Param message body models.User true  "Update user"
 // @Success 202 {object} models.User
 // @Failure	404 {object} JSONResult{message=string} "Not found"
 // @Failure	400 {object} JSONResult{message=string} "Validation error"
 // @Failure	500
+// @Security ApiKeyAuth
 // @Router /{login} [put]
 func Update(c echo.Context) error {
 	db := c.Get("db").(pgsql.Storage)
@@ -116,12 +116,12 @@ func Update(c echo.Context) error {
 // @Tags admins
 // @Summary Delete user on given Login
 // @Produce json
-// @Param token path string true "Authorization token"
 // @Param login path string true "User login"
 // @Success 200
 // @Failure	400 {object} JSONResult{message=string} "Attempt to remove the last admin"
 // @Failure	404 {object} JSONResult{message=string} "Not found"
 // @Failure	500
+// @Security ApiKeyAuth
 // @Router /{login} [delete]
 func Delete(c echo.Context) error {
 	db := c.Get("db").(pgsql.Storage)

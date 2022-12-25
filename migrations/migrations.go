@@ -26,6 +26,9 @@ func Start() {
 	flag.Parse()
 	arg := flag.Args()
 
+	//Оставил флаги и совместил флаг init с env Migration.
+	//Работает из docker-compose и все флаги go-pg/migrations можно использовать.
+	//Например ./userSL reset
 	if cfg.Get().Migration == "init" {
 		migration([]string{}, true)
 		os.Setenv("Migration", "")

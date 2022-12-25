@@ -15,10 +15,15 @@ definitions:
       message:
         type: string
     type: object
+  echo.JSONToken:
+    properties:
+      token:
+        type: string
+    type: object
   models.User:
     properties:
       dob:
-        type: integer
+        type: string
       last_name:
         type: string
       login:
@@ -42,16 +47,10 @@ info:
   contact: {}
   description: Api server
   title: Simple API
-  version: 0.0.1
+  version: 0.0.9
 paths:
   /:
     get:
-      parameters:
-      - description: Authorization token
-        in: path
-        name: token
-        required: true
-        type: string
       produces:
       - application/json
       responses:
@@ -61,16 +60,13 @@ paths:
             $ref: '#/definitions/models.User'
         "500":
           description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
       summary: Retrieves users
       tags:
       - read
     post:
       parameters:
-      - description: Authorization token
-        in: path
-        name: token
-        required: true
-        type: string
       - description: New user
         in: body
         name: message
@@ -104,17 +100,14 @@ paths:
               type: object
         "500":
           description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
       summary: Create new user
       tags:
       - admins
   /{login}:
     delete:
       parameters:
-      - description: Authorization token
-        in: path
-        name: token
-        required: true
-        type: string
       - description: User login
         in: path
         name: login
@@ -145,16 +138,13 @@ paths:
               type: object
         "500":
           description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
       summary: Delete user on given Login
       tags:
       - admins
     get:
       parameters:
-      - description: Authorization token
-        in: path
-        name: token
-        required: true
-        type: string
       - description: User login
         in: path
         name: login
@@ -178,16 +168,13 @@ paths:
               type: object
         "500":
           description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
       summary: Retrieves user based on given Login
       tags:
       - read
     put:
       parameters:
-      - description: Authorization token
-        in: path
-        name: token
-        required: true
-        type: string
       - description: User login
         in: path
         name: login
@@ -226,19 +213,76 @@ paths:
               type: object
         "500":
           description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
       summary: Update user on given Login
       tags:
       - admins
+  /auth/:
+    post:
+      parameters:
+      - description: Login, password
+        in: body
+        name: message
+        required: true
+        schema:
+          allOf:
+          - $ref: '#/definitions/echo.JSONLogin'
+          - properties:
+              login:
+                type: string
+              password:
+                type: string
+            type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Token
+          schema:
+            allOf:
+            - $ref: '#/definitions/echo.JSONToken'
+            - properties:
+                token:
+                  type: string
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/echo.JSONResult'
+            - properties:
+                message:
+                  type: string
+              type: object
+        "401":
+          description: Authentication error
+          schema:
+            allOf:
+            - $ref: '#/definitions/echo.JSONResult'
+            - properties:
+                message:
+                  type: string
+              type: object
+        "423":
+          description: Locked user
+          schema:
+            allOf:
+            - $ref: '#/definitions/echo.JSONResult'
+            - properties:
+                message:
+                  type: string
+              type: object
+        "500":
+          description: Internal Server Error
+      summary: Authentication
+      tags:
+      - auth
 schemes:
 - http
 securityDefinitions:
-  BasicAuth:
-    type: basic
+  ApiKeyAuth:
+    in: query
+    name: token
+    type: apiKey
 swagger: "2.0"
-tags:
-- description: Admin access
-  name: admins
-- description: Read only access. For all authorized but not blocked
-  name: read
-- description: For authorization
-  name: auth
