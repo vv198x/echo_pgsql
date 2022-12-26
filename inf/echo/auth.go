@@ -81,6 +81,7 @@ func checkToken(next echo.HandlerFunc) echo.HandlerFunc {
 
 			return echo.NewHTTPError(http.StatusUnauthorized, "Authentication error")
 		}
+
 		if token.Claims.(jwt.MapClaims)["login"] != "" {
 
 			c.Set("rule", token.Claims.(jwt.MapClaims)["rule"])

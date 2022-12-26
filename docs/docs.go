@@ -488,8 +488,10 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "rule": {
+                    "description": "1-admin 2-read 3-lock",
                     "type": "integer",
-                    "minimum": 0
+                    "maximum": 3,
+                    "minimum": 1
                 }
             }
         }
