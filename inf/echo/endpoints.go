@@ -1,11 +1,12 @@
 package echo
 
 import (
+	"errors"
+	"github.com/go-pg/pg"
 	"github.com/labstack/echo"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"
-	"strings"
 	"userSL/inf/pgsql"
 	"userSL/models"
 )
@@ -23,8 +24,8 @@ import (
 func Read(c echo.Context) error {
 	user := *(c.Get("userSL").(*models.User))
 
-	//Не выводить пароль. Так занулил, если тип сменится.
-	user.Password = models.User{}.Password
+	//Не выводить пароль.
+	user.Password = ""
 	return c.JSON(http.StatusOK, &user)
 }
 
@@ -41,7 +42,7 @@ func ReadAll(c echo.Context) error {
 	users, err := db.LoadAll()
 	if err == nil {
 		for i := range users {
-			users[i].Password = models.User{}.Password
+			users[i].Password = ""
 		}
 		return c.JSON(http.StatusOK, &users)
 	}
@@ -73,8 +74,9 @@ func Create(c echo.Context) error {
 	if err == nil {
 		return c.JSON(http.StatusCreated, user)
 	}
+
 	//При OnConflict возращается "pg: no rows in result set"
-	if strings.Contains(err.Error(), "no rows") {
+	if errors.Is(err, pg.ErrNoRows) {
 		return echo.NewHTTPError(http.StatusConflict, "User exists")
 	}
 
