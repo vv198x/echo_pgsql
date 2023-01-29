@@ -17,7 +17,7 @@ func TestGetToken(t *testing.T) {
 	}
 
 	// Create a mock database for testing
-	db := pgsql.GetTestDb()
+	db := pgsql.GetMockDB()
 
 	// Create a mock JSONLogin struct for testing
 	login := JSONLogin{

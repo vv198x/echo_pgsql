@@ -2,7 +2,6 @@ package logger
 
 import (
 	"log"
-	"log/syslog"
 	"os"
 	"path/filepath"
 	"time"
@@ -19,7 +18,7 @@ func init() {
 var LogFile *os.File
 
 func Start() {
-	if err := os.MkdirAll("./log", os.ModePerm); err != nil {
+	if err := os.MkdirAll(logDir, os.ModePerm); err != nil {
 		log.Println("Log dir exist")
 	}
 
@@ -32,17 +31,6 @@ func Start() {
 		log.Fatalln("Dont create log file")
 	}
 	if cfg.Get().Debug {
-		log.SetOutput(LogFile)
-	}
-}
-
-func SendSyslogMail(msg string) {
-	syslog, err := syslog.New(syslog.LOG_MAIL, "userSL")
-	if err != nil {
-		log.Println("Load syslog ", err)
-	} else {
-		log.SetOutput(syslog)
-		log.Println(msg)
 		log.SetOutput(LogFile)
 	}
 }

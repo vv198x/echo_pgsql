@@ -5,7 +5,7 @@ import (
 	"userSL/models"
 )
 
-type testBD struct {
+type mockDB struct {
 }
 
 var (
@@ -13,11 +13,11 @@ var (
 	user  = models.User{Login: "user", Password: "user", Rule: models.Read, Name: "first name user", LastName: "last name user", Dob: "21-10-2000"}
 )
 
-func GetTestDb() *testBD {
-	return &testBD{}
+func GetMockDB() *mockDB {
+	return &mockDB{}
 }
 
-func (*testBD) Load(login string) (models.User, error) {
+func (*mockDB) Load(login string) (models.User, error) {
 
 	if login == "admin" {
 		return admin, nil
@@ -28,32 +28,32 @@ func (*testBD) Load(login string) (models.User, error) {
 	return models.User{}, errors.New("user not found")
 }
 
-func (*testBD) LoadAll() ([]models.User, error) {
+func (*mockDB) LoadAll() ([]models.User, error) {
 	users := []models.User{admin, user}
 
 	return users, nil
 }
 
-func (*testBD) Save(user *models.User) error {
+func (*mockDB) Save(user *models.User) error {
 	return nil
 }
-func (*testBD) Change(oldLogin string, user *models.User) error {
+func (*mockDB) Change(oldLogin string, user *models.User) error {
 	if oldLogin == "admin" || oldLogin == "user" {
 		return nil
 	}
 	return errors.New("user not found")
 }
-func (*testBD) Remove(login string, rule int) error {
+func (*mockDB) Remove(login string, rule int) error {
 	if login == "admin" || login == "user" {
 		return nil
 	}
 	return errors.New("user not found")
 }
 
-func (*testBD) LastAdmin() bool {
+func (*mockDB) LastAdmin() bool {
 	return true
 }
 
-func (*testBD) CloseDB() error {
+func (*mockDB) CloseDB() error {
 	return nil
 }
