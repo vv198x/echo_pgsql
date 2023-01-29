@@ -27,6 +27,7 @@ func getToken(c echo.Context) error {
 	//Res для боди запроса
 	res := new(JSONLogin)
 
+	//lint:ignore SA4006 this value of err is never used
 	err := c.Bind(res) //nolint
 	err = c.Validate(res)
 	if err != nil {
@@ -75,7 +76,7 @@ func checkToken(next echo.HandlerFunc) echo.HandlerFunc {
 
 		token, err := jwt.Parse(tVal, func(token *jwt.Token) (interface{}, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-				return nil, fmt.Errorf("Unexpected Signing Method: %v", token.Header["alg"])
+				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 			}
 
 			return []byte(cfg.Get().JWTkey), nil

@@ -29,7 +29,7 @@ func headlers(e *echo.Echo) {
 func validJSON(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		user := new(models.User)
-
+		//lint:ignore SA4006  this value of err
 		err := c.Bind(user) //nolint
 		err = c.Validate(user)
 		if err != nil {

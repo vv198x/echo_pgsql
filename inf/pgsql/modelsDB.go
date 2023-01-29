@@ -6,6 +6,7 @@ import (
 )
 
 type userDB struct {
+	//lint:ignore U1000 field tableName is unused
 	tableName interface{} `sql:"users"` //nolint:golint,unused
 	Login     string      `sql:"login"`
 	Password  string      `sql:"password"`

@@ -25,7 +25,7 @@ func (*testBD) Load(login string) (models.User, error) {
 	if login == "user" {
 		return user, nil
 	}
-	return models.User{}, errors.New("User not found")
+	return models.User{}, errors.New("user not found")
 }
 
 func (*testBD) LoadAll() ([]models.User, error) {
@@ -41,13 +41,13 @@ func (*testBD) Change(oldLogin string, user *models.User) error {
 	if oldLogin == "admin" || oldLogin == "user" {
 		return nil
 	}
-	return errors.New("User not found")
+	return errors.New("user not found")
 }
 func (*testBD) Remove(login string, rule int) error {
 	if login == "admin" || login == "user" {
 		return nil
 	}
-	return errors.New("User not found")
+	return errors.New("user not found")
 }
 
 func (*testBD) LastAdmin() bool {
