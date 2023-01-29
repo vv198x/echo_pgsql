@@ -13,7 +13,7 @@ type Config struct {
 	PGAddr    string `env:"PGAddr" env-default:"192.168.122.161:5432" env-description:"Password for PostgreSQL"`
 	PGDB      string `env:"PGDB" env-default:"database" env-description:"Name database for PostgreSQL"`
 	Migration string `env:"Migration" env-default:"" env-description:"To initiate a migration. init"`
-	Debug     bool   `env:"Debug" env-default:0 env-description:"Debug start mode"`
+	Debug     bool   `env:"Debug" env-default:"0" env-description:"Debug start mode"`
 }
 
 var c Config
