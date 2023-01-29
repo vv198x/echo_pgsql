@@ -4,6 +4,7 @@ import (
 	"github.com/go-playground/validator"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+	"log"
 	"userSL/inf/pgsql"
 	"userSL/pkg/cfg"
 )
@@ -12,24 +13,28 @@ func Start(addr string) {
 	e := echo.New()
 
 	db := pgsql.GetPostgre()
-	defer db.CloseDB()
+	defer log.Println(db.CloseDB())
 
+	//DB в контекст, один пулл и одно соединение на всё API
 	e.Use(ContextDB(db))
+
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: "method=${method}, uri=${uri}, status=${status}\n",
-		//Output: logger.LogFile,
 	}))
 
-	if cfg.Get().Debug == false {
+	if !cfg.Get().Debug {
 		e.Use(middleware.Recover())
 	}
+
+	//go-playground validator
 	e.Validator = &CustomValidator{Validator: validator.New()}
 
+	//Настройки CORS
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"*"},
 		AllowMethods: []string{echo.GET, echo.POST, echo.PUT, echo.DELETE},
 	}))
-
+	//Хендлеры в отдельном файле headlers
 	headlers(e)
 
 	e.Logger.Fatal(e.Start(addr))

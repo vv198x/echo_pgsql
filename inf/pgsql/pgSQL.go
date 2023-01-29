@@ -68,10 +68,12 @@ func (pg *pgSQL) Change(oldLogin string, user *models.User) error {
 
 func (pg *pgSQL) LastAdmin() (last bool) {
 	//Запрос вернет 1 если есть только один администратор
-	pg.c.Query(&last, `select cast(case when COUNT(*) = 1 then 1 else 0 end AS BIT)
+	_, err := pg.c.Query(&last, `select cast(case when COUNT(*) = 1 then 1 else 0 end AS BIT)
 							from users 
 							where rule = ?0`, models.Admin)
-
+	if err != nil {
+		log.Error(err)
+	}
 	return
 }
 

@@ -19,7 +19,9 @@ func init() {
 var LogFile *os.File
 
 func Start() {
-	os.MkdirAll("./log", os.ModePerm)
+	if err := os.MkdirAll("./log", os.ModePerm); err != nil {
+		log.Println("Log dir exist")
+	}
 
 	logFilePath := filepath.Join(
 		logDir,

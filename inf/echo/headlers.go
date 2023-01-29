@@ -20,7 +20,7 @@ func headlers(e *echo.Echo) {
 	admin.PUT("/:login", Update, checkLogin, validJSON)
 	admin.DELETE("/:login", Delete, checkLogin, checkLastAdmin)
 
-	// Для пакета swag разделил Read(на Read и ReadAll). И не получилось в одну совместить
+	// Для пакета swag разделил Read(на Read и ReadAll).
 	read.GET("/", ReadAll)
 	read.GET("/:login", Read, checkLogin)
 
@@ -30,8 +30,8 @@ func validJSON(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		user := new(models.User)
 
-		c.Bind(user)
-		err := c.Validate(user)
+		err := c.Bind(user) //nolint
+		err = c.Validate(user)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 		}

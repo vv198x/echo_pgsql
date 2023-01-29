@@ -24,9 +24,10 @@ import (
 // @Failure	500
 // @Router /auth/ [post]
 func getToken(c echo.Context) error {
+	//Res для боди запроса
 	res := new(JSONLogin)
 
-	err := c.Bind(res)
+	err := c.Bind(res) //nolint
 	err = c.Validate(res)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
@@ -34,7 +35,10 @@ func getToken(c echo.Context) error {
 
 	db, _ := c.Get("db").(pgsql.Storage)
 	user, err := db.Load(res.Login)
-
+	if err != nil {
+		log.Println("DB error ", err)
+		return echo.NewHTTPError(http.StatusInternalServerError, "DB error")
+	}
 	if user.Rule == models.Lock {
 		log.Println("Blocked user ", user.Login)
 		return echo.NewHTTPError(http.StatusLocked, "Locked")

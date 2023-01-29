@@ -6,7 +6,7 @@ import (
 )
 
 type userDB struct {
-	tableName interface{} `sql:"users"`
+	tableName interface{} `sql:"users"` //nolint:golint,unused
 	Login     string      `sql:"login"`
 	Password  string      `sql:"password"`
 	Rule      int         `sql:"rule"`
